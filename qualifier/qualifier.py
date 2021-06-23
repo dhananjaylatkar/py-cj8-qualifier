@@ -5,11 +5,11 @@ def get_len_of_longest_word(rows: List[List[Any]], labels: Optional[List[Any]] =
     """Return List of len of largest word in each column.
 
     Args:
-        rows (List[List[Any]]): table
-        labels (Optional[List[Any]], optional): table header. Defaults to None.
+        rows (List[List[Any]]): Table
+        labels (Optional[List[Any]], optional): Table header. Defaults to None.
 
     Returns:
-        List[int]: List of len of largest word + 1 in each column.
+        List[int]: List of len of largest word in each column.
     """
     res = [0] * len(rows[0])
     if labels:
@@ -23,36 +23,50 @@ def get_len_of_longest_word(rows: List[List[Any]], labels: Optional[List[Any]] =
 
 
 def create_header(labels: List[Any], len_of_clm: List[int], centered: bool = False) -> str:
+    """Creates table header
+
+    Args:
+        labels (List[Any]): Table headers.
+        len_of_clm (List[int]): Length of each column.
+        centered (bool, optional): If the items should be aligned to the center, else they are left aligned.. Defaults to False.
+
+    Returns:
+        str: Table header
+    """
     res = '│'
     res_top = '┌'
     res_bot = '├'
 
     # if labels are not provided return top of table. e.g. ┌────────────┬───────────┬─────────┐
     if not labels:
-        res_top += ''.join([f"{'─' * (len_of_clm[i]+2)}{'┬' if i < len(len_of_clm)-1 else '┐'}" for i,
+        res_top += ''.join([f"{'─' * (itm+2)}{'┬' if i < len(len_of_clm)-1 else '┐'}" for i,
                            itm in enumerate(len_of_clm)])
         return res_top
 
     for i, itm in enumerate(labels):
         res_top += f"{'─' * (len_of_clm[i]+2)}{'┬' if i < len(labels)-1 else '┐'}"
         res_bot += f"{'─' * (len_of_clm[i]+2)}{'┼' if i < len(labels)-1 else '┤'}"
-        if centered:
-            res += f" {str(itm):^{len_of_clm[i]}} │"
-        else:
-            res += f" {str(itm):<{len_of_clm[i]}} │"
+        res += f" {itm!s:{'<^'[centered]}{len_of_clm[i]}} │"
 
     return '\n'.join([res_top, res, res_bot])
 
 
 def create_body(rows: List[List[Any]], len_of_clm: List[int], centered: bool = False) -> str:
+    """Creates Table Body
+
+    Args:
+        rows (List[List[Any]]): Table.
+        len_of_clm (List[int]): Length of each column.
+        centered (bool, optional): If the items should be aligned to the center, else they are left aligned. Defaults to False.
+
+    Returns:
+        str: Body of table
+    """
     res = []
     for row in rows:
         res_tmp = '│'
         for i, itm in enumerate(row):
-            if centered:
-                res_tmp += f" {str(itm):^{len_of_clm[i]}} │"
-            else:
-                res_tmp += f" {str(itm):<{len_of_clm[i]}} │"
+            res_tmp += f" {itm!s:{'<^'[centered]}{len_of_clm[i]}} │"
         res.append(res_tmp)
     res_bot = '└'
     res_bot += ''.join([f"{'─' * (itm+2)}{'┴' if i < len(len_of_clm)-1 else '┘'}" for i,
